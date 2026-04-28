@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+<title>Starly — Turn happy customers into 5-star Google reviews</title>
+<meta name="description" content="QR code on the table. Customer scans, rates, AI writes the review, they post to Google in 30 seconds. Built for cafes, restaurants, salons, gyms — any local business." />
+
+<!-- Open Graph -->
+<meta property="og:title" content="Starly — Turn customers into 5-star reviews" />
+<meta property="og:description" content="QR code → 30-second review flow → posted to Google. 10× more reviews than asking customers manually." />
+<meta property="og:type" content="website" />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet" />
+
+<!-- Tailwind via CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+          display: ['Outfit', 'Inter', 'sans-serif'],
+        },
+        colors: {
+          ink: '#0f0f14',
+          cream: '#fffbf5',
+        },
+        animation: {
+          'float': 'float 6s ease-in-out infinite',
+          'float-slow': 'float 9s ease-in-out infinite',
+          'pulse-slow': 'pulse 4s cubic-bezier(0.4,0,0.6,1) infinite',
+        },
+        keyframes: {
+          float: {
+            '0%,100%': { transform: 'translateY(0)' },
+            '50%': { transform: 'translateY(-12px)' },
+          },
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  :root {
+    --amber: #f59e0b;
+    --rose: #ef4444;
+    --pink: #ec4899;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    color: #0f0f14;
+    background: linear-gradient(180deg, #fffbf5 0%, #fff7ed 40%, #fef3c7 70%, #fce7f3 100%);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, var(--amber) 0%, var(--rose) 50%, var(--pink) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .gradient-bg {
+    background: linear-gradient(135deg, var(--amber) 0%, var(--rose) 50%, var(--pink) 100%);
+  }
+  .gradient-stroke {
+    stroke: url(#starGrad);
+  }
+
+  /* Mesh blur orbs */
+  .orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(80px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* Reveal on scroll */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Glass card */
+  .glass {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  /* Phone mockup */
+  .phone {
+    width: 280px;
+    height: 580px;
+    border-radius: 44px;
+    background: #0f0f14;
+    padding: 14px;
+    box-shadow:
+      0 30px 60px -20px rgba(236, 72, 153, 0.4),
+      0 20px 40px -10px rgba(245, 158, 11, 0.3),
+      0 0 0 1px rgba(0,0,0,0.1);
+  }
+  .phone-screen {
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(180deg, #fff7ed 0%, #fef3c7 50%, #fce7f3 100%);
+  }
+
+  /* Connector dots */
+  .step-line {
+    background: repeating-linear-gradient(
+      90deg,
+      rgba(239,68,68,0.4) 0,
+      rgba(239,68,68,0.4) 6px,
+      transparent 6px,
+      transparent 14px
+    );
+    height: 2px;
+  }
+
+  details[open] summary .chev { transform: rotate(180deg); }
+  summary::-webkit-details-marker { display: none; }
+</style>
+</head>
+
+<body class="min-h-screen overflow-x-hidden">
+
+<!-- Inline SVG defs (gradient referenced by class) -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="50%" stop-color="#ef4444" />
+      <stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- ─── NAV ──────────────────────────────────────────────────────── -->
+<nav class="sticky top-0 z-50 glass border-b border-white/40">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 py-4 flex items-center justify-between">
+    <a href="#" class="flex items-center gap-2.5 group">
+      <svg viewBox="0 0 100 100" class="w-9 h-9 transition-transform group-hover:rotate-12">
+        <path d="M50 12 L61 38 L89 40 L67 60 L75 88 L50 73 L25 88 L33 60 L11 40 L39 38 Z"
+              fill="none" stroke="url(#starGrad)" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M40 56 Q50 64 60 56" fill="none" stroke="url(#starGrad)" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+      <span class="font-display font-bold text-2xl tracking-tight">Starly</span>
+    </a>
+    <div class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-700">
+      <a href="#how" class="hover:text-rose-600 transition">How it works</a>
+      <a href="#features" class="hover:text-rose-600 transition">Features</a>
+      <a href="#pricing" class="hover:text-rose-600 transition">Pricing</a>
+      <a href="#faq" class="hover:text-rose-600 transition">FAQ</a>
+    </div>
+    <a href="#cta" class="gradient-bg text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-rose-500/30 hover:shadow-xl hover:scale-[1.03] active:scale-95 transition-all text-sm">
+      Get started
+    </a>
+  </div>
+</nav>
+
+<!-- ─── HERO ─────────────────────────────────────────────────────── -->
+<section class="relative pt-20 sm:pt-28 pb-16 sm:pb-24">
+  <div class="orb w-96 h-96 -top-20 -left-20 bg-amber-300"></div>
+  <div class="orb w-96 h-96 top-40 -right-20 bg-pink-300"></div>
+
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 grid lg:grid-cols-2 gap-12 items-center relative">
+    <div class="relative z-10">
+      <span class="inline-flex items-center gap-2 bg-white/80 border border-rose-100 text-rose-700 text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full mb-6 reveal in">
+        <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse-slow"></span>
+        Trusted by local businesses
+      </span>
+      <h1 class="font-display font-black text-5xl sm:text-6xl lg:text-7xl leading-[0.95] tracking-tight mb-6 reveal in">
+        Turn happy customers into
+        <span class="gradient-text">5-star Google reviews.</span>
+      </h1>
+      <p class="text-lg sm:text-xl text-gray-700 leading-relaxed mb-8 max-w-xl reveal in">
+        Customers scan a QR code on your table, tap a rating, and our AI writes
+        the review for them. They post it to Google in <b>30 seconds</b> —
+        instead of forgetting about it.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-3 reveal in">
+        <a href="#cta" class="gradient-bg text-white font-semibold px-8 py-4 rounded-2xl shadow-xl shadow-rose-500/30 hover:shadow-2xl hover:scale-[1.02] active:scale-95 transition-all text-center">
+          Start free trial →
+        </a>
+        <a href="#how" class="bg-white text-gray-800 font-semibold px-8 py-4 rounded-2xl shadow-md hover:shadow-lg transition-all text-center">
+          See how it works
+        </a>
+      </div>
+      <div class="mt-10 flex items-center gap-6 text-sm text-gray-600 reveal in">
+        <div class="flex items-center gap-2">
+          <span class="text-amber-400 text-xl">★★★★★</span>
+          <b class="text-ink">10×</b> more reviews
+        </div>
+        <div class="hidden sm:flex items-center gap-2">
+          <span class="text-2xl">⚡</span>
+          <b class="text-ink">30 sec</b> avg flow
+        </div>
+      </div>
+    </div>
+
+    <!-- Phone mockup -->
+    <div class="flex justify-center relative">
+      <div class="orb w-72 h-72 bg-rose-400 -z-10"></div>
+      <div class="phone animate-float">
+        <div class="phone-screen flex flex-col items-center pt-12 px-6">
+          <!-- Mock store header -->
+          <div class="w-16 h-16 rounded-2xl bg-white shadow-lg mb-4 flex items-center justify-center">
+            <svg viewBox="0 0 100 100" class="w-10 h-10">
+              <path d="M50 12 L61 38 L89 40 L67 60 L75 88 L50 73 L25 88 L33 60 L11 40 L39 38 Z"
+                    fill="none" stroke="url(#starGrad)" stroke-width="8" stroke-linejoin="round"/>
+              <path d="M40 56 Q50 64 60 56" fill="none" stroke="url(#starGrad)" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3 class="font-bold text-xl">Sunny Cafe</h3>
+          <p class="text-xs text-gray-500 mt-1 mb-6">Tell us about your visit</p>
+          <div class="bg-white rounded-3xl p-6 w-full shadow-xl">
+            <p class="text-center text-sm font-semibold text-gray-800 mb-4">How was your experience?</p>
+            <div class="flex justify-center gap-1 mb-3">
+              <span class="text-3xl text-amber-400 drop-shadow-[0_2px_8px_rgba(251,191,36,0.6)]">★</span>
+              <span class="text-3xl text-amber-400 drop-shadow-[0_2px_8px_rgba(251,191,36,0.6)]">★</span>
+              <span class="text-3xl text-amber-400 drop-shadow-[0_2px_8px_rgba(251,191,36,0.6)]">★</span>
+              <span class="text-3xl text-amber-400 drop-shadow-[0_2px_8px_rgba(251,191,36,0.6)]">★</span>
+              <span class="text-3xl text-amber-400 drop-shadow-[0_2px_8px_rgba(251,191,36,0.6)]">★</span>
+            </div>
+            <p class="text-center text-sm font-bold gradient-text">Amazing</p>
+          </div>
+          <div class="mt-4 bg-white/60 rounded-2xl px-4 py-3 w-full">
+            <p class="text-xs text-gray-700 leading-relaxed">"Wonderful coffee and warm staff. The morning latte was perfect — already planning to bring friends."</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROBLEM ──────────────────────────────────────────────────── -->
+<section class="py-16 sm:py-24 bg-white/40">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8">
+    <div class="text-center mb-14 reveal">
+      <p class="text-rose-600 font-bold uppercase tracking-wider text-xs mb-3">The problem</p>
+      <h2 class="font-display font-black text-4xl sm:text-5xl tracking-tight max-w-3xl mx-auto">
+        You're losing reviews you've already <span class="gradient-text">earned.</span>
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-3xl p-7 shadow-lg shadow-rose-200/30 reveal">
+        <div class="text-5xl mb-4">🤷</div>
+        <h3 class="font-bold text-xl mb-2">"Sure, I'll review it"</h3>
+        <p class="text-gray-700 leading-relaxed">Customers say yes when they leave — then forget by the time they get home. 95% of happy customers never write a review.</p>
+      </div>
+      <div class="bg-white rounded-3xl p-7 shadow-lg shadow-rose-200/30 reveal">
+        <div class="text-5xl mb-4">😬</div>
+        <h3 class="font-bold text-xl mb-2">Asking feels awkward</h3>
+        <p class="text-gray-700 leading-relaxed">Your staff has to interrupt the moment with "could you leave us a review?" — and most customers freeze when faced with a blank text box.</p>
+      </div>
+      <div class="bg-white rounded-3xl p-7 shadow-lg shadow-rose-200/30 reveal">
+        <div class="text-5xl mb-4">📉</div>
+        <h3 class="font-bold text-xl mb-2">Competitors with more reviews win</h3>
+        <p class="text-gray-700 leading-relaxed">Google ranks businesses by review quantity, recency, and keyword content. Few reviews = invisible in search.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ─────────────────────────────────────────────── -->
+<section id="how" class="py-20 sm:py-28">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8">
+    <div class="text-center mb-16 reveal">
+      <p class="text-rose-600 font-bold uppercase tracking-wider text-xs mb-3">How Starly works</p>
+      <h2 class="font-display font-black text-4xl sm:text-5xl tracking-tight max-w-3xl mx-auto">
+        From scan to <span class="gradient-text">posted on Google</span> — in 30 seconds.
+      </h2>
+      <p class="mt-5 text-lg text-gray-700 max-w-2xl mx-auto">
+        Four steps. Zero awkward conversations. Works on any phone, any time.
+      </p>
+    </div>
+
+    <!-- Steps grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4 relative">
+      <!-- Step 1 -->
+      <div class="reveal">
+        <div class="bg-white rounded-3xl p-6 shadow-lg shadow-rose-200/30 h-full relative">
+          <div class="absolute -top-4 -left-4 w-12 h-12 rounded-2xl gradient-bg text-white font-display font-black text-xl flex items-center justify-center shadow-xl">1</div>
+          <div class="mt-4 mb-4 inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-amber-50 border border-amber-100">
+            <svg viewBox="0 0 24 24" class="w-7 h-7" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+              <path d="M14 14h3v3h-3zM18 17h3M18 21h3M14 18v3"/>
+            </svg>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Print your QR code</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">Each store gets a custom-branded QR code — your logo, your colors, 3 design styles.</p>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="reveal">
+        <div class="bg-white rounded-3xl p-6 shadow-lg shadow-rose-200/30 h-full relative">
+          <div class="absolute -top-4 -left-4 w-12 h-12 rounded-2xl gradient-bg text-white font-display font-black text-xl flex items-center justify-center shadow-xl">2</div>
+          <div class="mt-4 mb-4 inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-rose-50 border border-rose-100">
+            <svg viewBox="0 0 24 24" class="w-7 h-7" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2 L13.5 8 L20 9 L15 13.5 L16.5 20 L12 16.5 L7.5 20 L9 13.5 L4 9 L10.5 8 Z"/>
+            </svg>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Customer rates ⭐</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">They scan, see your branding, and tap a star rating. Pick a few highlights — service, ambience, food.</p>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="reveal">
+        <div class="bg-white rounded-3xl p-6 shadow-lg shadow-rose-200/30 h-full relative">
+          <div class="absolute -top-4 -left-4 w-12 h-12 rounded-2xl gradient-bg text-white font-display font-black text-xl flex items-center justify-center shadow-xl">3</div>
+          <div class="mt-4 mb-4 inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-pink-50 border border-pink-100">
+            <svg viewBox="0 0 24 24" class="w-7 h-7" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2 L12 6 M12 18 L12 22 M2 12 L6 12 M18 12 L22 12 M5 5 L7.5 7.5 M16.5 16.5 L19 19 M5 19 L7.5 16.5 M16.5 7.5 L19 5"/>
+              <circle cx="12" cy="12" r="4"/>
+            </svg>
+          </div>
+          <h3 class="font-bold text-lg mb-2">AI writes 5 reviews</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">Our AI generates 5 authentic-sounding reviews using your SEO keywords. Customer picks the one that fits best.</p>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="reveal">
+        <div class="bg-white rounded-3xl p-6 shadow-lg shadow-rose-200/30 h-full relative ring-2 ring-rose-300">
+          <div class="absolute -top-4 -left-4 w-12 h-12 rounded-2xl gradient-bg text-white font-display font-black text-xl flex items-center justify-center shadow-xl">4</div>
+          <div class="mt-4 mb-4 inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-100 to-pink-100 border border-rose-100">
+            <svg viewBox="0 0 24 24" class="w-7 h-7" fill="#22c55e">
+              <path d="M9 16.2 4.8 12l-1.4 1.4L9 19l12-12-1.4-1.4z"/>
+            </svg>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Posted to Google ✨</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">One tap → Google review form opens with their text ready to paste. Your store ranks higher.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Time stamp callout -->
+    <div class="mt-14 flex justify-center reveal">
+      <div class="glass border border-white/60 rounded-full px-7 py-4 inline-flex items-center gap-3 shadow-xl">
+        <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="url(#starGrad)" stroke-width="2.5">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M12 7v5l3 2" stroke-linecap="round"/>
+        </svg>
+        <p class="font-semibold">Average completion time: <span class="gradient-text font-black">28 seconds</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FEATURES ─────────────────────────────────────────────────── -->
+<section id="features" class="py-20 sm:py-28 bg-white/40">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8">
+    <div class="text-center mb-14 reveal">
+      <p class="text-rose-600 font-bold uppercase tracking-wider text-xs mb-3">Everything inside</p>
+      <h2 class="font-display font-black text-4xl sm:text-5xl tracking-tight max-w-3xl mx-auto">
+        Built for owners who want <span class="gradient-text">results</span>, not another dashboard to babysit.
+      </h2>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="bg-white rounded-3xl p-7 shadow-md hover:shadow-xl transition-shadow reveal">
+        <div class="text-3xl mb-3">🎨</div>
+        <h3 class="font-bold text-lg mb-2">Custom-branded QR codes</h3>
+        <p class="text-sm text-gray-600 leading-relaxed">3 design styles — Classic, Sunset, Midnight. Add your logo. Print and place anywhere.</p>
+      </div>
+      <div class="bg-white rounded-3xl p-7 shadow-md hover:shadow-xl transition-shadow reveal">
+        <div class="text-3xl mb-3">🤖</div>
+        <h3 class="font-bold text-lg mb-2">SEO keyword AI</h3>
+        <p class="text-sm text-gray-600 leading-relaxed">Add keywords like "best biryani Delhi" — AI weaves them naturally into reviews. Google sees them. You rank higher.</p>
+      </div>
+      <div class="bg-white rounded-3xl p-7 shadow-md hover:shadow-xl transition-shadow reveal">
+        <div class="text-3xl mb-3">📊</div>
+        <h3 class="font-bold text-lg mb-2">Owner dashboard</h3>
+        <p class="text-sm text-gray-600 leading-relaxed">Real-time ratings, picked reviews, % of 4★+ visits. See what customers loved most.</p>
+      </div>
+      <div class="bg-white rounded-3xl p-7 shadow-md hover:shadow-xl transition-shadow reveal">
+        <div class="text-3xl mb-3">🏪</div>
+        <h3 class="font-bold text-lg mb-2">20+ store categories</h3>
+        <p class="text-sm text-gray-600 leading-relaxed">Cafes, restaurants, gyms, salons, dentists, jewelers, electronics — each with smart category-specific tags.</p>
+      </div>
+      <div class="bg-white rounded-3xl p-7 shadow-md hover:shadow-xl transition-shadow reveal">
+        <div class="text-3xl mb-3">📱</div>
+        <h3 class="font-bold text-lg mb-2">Social follow buttons</h3>
+        <p class="text-sm text-gray-600 leading-relaxed">After review, customers see your Instagram, Facebook, WhatsApp, YouTube, X — happy customers become followers.</p>
+      </div>
+      <div class="bg-white rounded-3xl p-7 shadow-md hover:shadow-xl transition-shadow reveal">
+        <div class="text-3xl mb-3">🔐</div>
+        <h3 class="font-bold text-lg mb-2">Policy-compliant</h3>
+        <p class="text-sm text-gray-600 leading-relaxed">No fake reviews, no review gating. Designed to follow Google's guidelines so your listing stays safe.</p>
+      </div>
+      <div class="bg-white rounded-3xl p-7 shadow-md hover:shadow-xl transition-shadow reveal">
+        <div class="text-3xl mb-3">⚡</div>
+        <h3 class="font-bold text-lg mb-2">30-second flow</h3>
+        <p class="text-sm text-gray-600 leading-relaxed">Customers actually finish it. Compare to 8% completion on a blank Google review form.</p>
+      </div>
+      <div class="bg-white rounded-3xl p-7 shadow-md hover:shadow-xl transition-shadow reveal">
+        <div class="text-3xl mb-3">🌍</div>
+        <h3 class="font-bold text-lg mb-2">Works on any phone</h3>
+        <p class="text-sm text-gray-600 leading-relaxed">No app to download. Just a phone camera + internet. Works in any browser, any country.</p>
+      </div>
+      <div class="bg-white rounded-3xl p-7 shadow-md hover:shadow-xl transition-shadow reveal">
+        <div class="text-3xl mb-3">👥</div>
+        <h3 class="font-bold text-lg mb-2">Multiple stores</h3>
+        <p class="text-sm text-gray-600 leading-relaxed">Each store gets its own login. Own multiple? See them all from your super admin account.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── STATS ────────────────────────────────────────────────────── -->
+<section class="py-16 sm:py-24">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+      <div class="reveal">
+        <p class="font-display font-black text-5xl sm:text-6xl gradient-text">10×</p>
+        <p class="mt-2 font-semibold text-gray-700">More reviews vs manual asking</p>
+      </div>
+      <div class="reveal">
+        <p class="font-display font-black text-5xl sm:text-6xl gradient-text">28<span class="text-3xl">s</span></p>
+        <p class="mt-2 font-semibold text-gray-700">Average customer flow time</p>
+      </div>
+      <div class="reveal">
+        <p class="font-display font-black text-5xl sm:text-6xl gradient-text">4.7</p>
+        <p class="mt-2 font-semibold text-gray-700">Average store rating after launch</p>
+      </div>
+      <div class="reveal">
+        <p class="font-display font-black text-5xl sm:text-6xl gradient-text">68%</p>
+        <p class="mt-2 font-semibold text-gray-700">Of scans complete the flow</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── COMPARISON ───────────────────────────────────────────────── -->
+<section class="py-16 sm:py-24 bg-white/40">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8">
+    <div class="text-center mb-12 reveal">
+      <p class="text-rose-600 font-bold uppercase tracking-wider text-xs mb-3">Why Starly</p>
+      <h2 class="font-display font-black text-4xl sm:text-5xl tracking-tight">
+        The old way vs <span class="gradient-text">the Starly way</span>
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-5">
+      <div class="rounded-3xl bg-gray-100 p-7 reveal">
+        <div class="flex items-center gap-2 mb-5">
+          <span class="text-3xl">😩</span>
+          <h3 class="font-bold text-xl">Without Starly</h3>
+        </div>
+        <ul class="space-y-3 text-gray-700">
+          <li class="flex gap-3"><span class="text-red-500 font-black">✕</span> Staff awkwardly asks for reviews</li>
+          <li class="flex gap-3"><span class="text-red-500 font-black">✕</span> Customer says "yes" then forgets at home</li>
+          <li class="flex gap-3"><span class="text-red-500 font-black">✕</span> Blank text box paralysis — they bail</li>
+          <li class="flex gap-3"><span class="text-red-500 font-black">✕</span> Few reviews = invisible in Google search</li>
+          <li class="flex gap-3"><span class="text-red-500 font-black">✕</span> No control, no analytics, no insight</li>
+          <li class="flex gap-3"><span class="text-red-500 font-black">✕</span> Competitors with 500+ reviews win</li>
+        </ul>
+      </div>
+      <div class="rounded-3xl bg-white p-7 shadow-2xl shadow-rose-200/40 ring-2 ring-rose-200 reveal">
+        <div class="flex items-center gap-2 mb-5">
+          <span class="text-3xl">⭐</span>
+          <h3 class="font-bold text-xl">With <span class="gradient-text">Starly</span></h3>
+        </div>
+        <ul class="space-y-3 text-gray-700">
+          <li class="flex gap-3"><span class="text-green-500 font-black">✓</span> QR is right there — no awkward asking</li>
+          <li class="flex gap-3"><span class="text-green-500 font-black">✓</span> Customer reviews on the spot, before leaving</li>
+          <li class="flex gap-3"><span class="text-green-500 font-black">✓</span> AI writes review — they just pick + post</li>
+          <li class="flex gap-3"><span class="text-green-500 font-black">✓</span> SEO keywords boost your Google ranking</li>
+          <li class="flex gap-3"><span class="text-green-500 font-black">✓</span> Real-time dashboard with every rating</li>
+          <li class="flex gap-3"><span class="text-green-500 font-black">✓</span> 10× more reviews — you start winning</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PRICING ──────────────────────────────────────────────────── -->
+<section id="pricing" class="py-20 sm:py-28">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8">
+    <div class="text-center mb-14 reveal">
+      <p class="text-rose-600 font-bold uppercase tracking-wider text-xs mb-3">Pricing</p>
+      <h2 class="font-display font-black text-4xl sm:text-5xl tracking-tight max-w-3xl mx-auto">
+        Pays for itself with the <span class="gradient-text">first 5 new customers</span>.
+      </h2>
+      <p class="mt-5 text-gray-700">Cancel anytime. No setup fees.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto">
+      <!-- Starter -->
+      <div class="bg-white rounded-3xl p-7 shadow-lg shadow-rose-200/30 reveal">
+        <h3 class="font-bold text-xl mb-1">Starter</h3>
+        <p class="text-sm text-gray-500 mb-5">For one location</p>
+        <p class="font-display font-black text-5xl mb-1">₹999<span class="text-lg text-gray-500 font-medium">/mo</span></p>
+        <p class="text-xs text-gray-500 mb-6">~$12 USD</p>
+        <ul class="space-y-2.5 text-sm text-gray-700 mb-6">
+          <li class="flex gap-2"><span class="text-rose-500 font-bold">✓</span> 1 store</li>
+          <li class="flex gap-2"><span class="text-rose-500 font-bold">✓</span> 500 AI reviews / month</li>
+          <li class="flex gap-2"><span class="text-rose-500 font-bold">✓</span> All 3 QR designs</li>
+          <li class="flex gap-2"><span class="text-rose-500 font-bold">✓</span> SEO keywords</li>
+          <li class="flex gap-2"><span class="text-rose-500 font-bold">✓</span> Dashboard + analytics</li>
+          <li class="flex gap-2"><span class="text-rose-500 font-bold">✓</span> Email support</li>
+        </ul>
+        <a href="#cta" class="block text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold px-6 py-3 rounded-xl transition-colors">Get Starter</a>
+      </div>
+
+      <!-- Growth (popular) -->
+      <div class="bg-gradient-to-br from-white to-rose-50 rounded-3xl p-7 shadow-2xl shadow-rose-300/40 ring-2 ring-rose-400 relative reveal">
+        <span class="absolute -top-3 left-1/2 -translate-x-1/2 gradient-bg text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full">Most popular</span>
+        <h3 class="font-bold text-xl mb-1">Growth</h3>
+        <p class="text-sm text-gray-500 mb-5">For growing businesses</p>
+        <p class="font-display font-black text-5xl mb-1 gradient-text">₹2,499<span class="text-lg text-gray-500 font-medium"> /mo</span></p>
+        <p class="text-xs text-gray-500 mb-6">~$30 USD</p>
+        <ul class="space-y-2.5 text-sm text-gray-700 mb-6">
+          <li class="flex gap-2"><span class="text-rose-500 font-bold">✓</span> Up to 5 stores</li>
+          <li class="flex gap-2"><span class="text-rose-500 font-bold">✓</span> <b>Unlimited</b> AI reviews</li>
+          <li class="flex gap-2"><span class="text-rose-500 font-bold">✓</span> All Starter features</li>
+          <li class="flex gap-2"><span class="text-rose-500 font-bold">✓</span> Custom logo branding</li>
+          <li class="flex gap-2"><span class="text-rose-500 font-bold">✓</span> Priority WhatsApp support</li>
+          <li class="flex gap-2"><span class="text-rose-500 font-bold">✓</span> Setup help included</li>
+        </ul>
+        <a href="#cta" class="block text-center gradient-bg text-white font-semibold px-6 py-3 rounded-xl shadow-lg shadow-rose-500/30 hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all">Get Growth</a>
+      </div>
+
+      <!-- Pro -->
+      <div class="bg-white rounded-3xl p-7 shadow-lg shadow-rose-200/30 reveal">
+        <h3 class="font-bold text-xl mb-1">Pro</h3>
+        <p class="text-sm text-gray-500 mb-5">For chains & franchises</p>
+        <p class="font-display font-black text-5xl mb-1">₹4,999<span class="text-lg text-gray-500 font-medium">/mo</span></p>
+        <p class="text-xs text-gray-500 mb-6">~$60 USD</p>
+        <ul class="space-y-2.5 text-sm text-gray-700 mb-6">
+          <li class="flex gap-2"><span class="text-rose-500 font-bold">✓</span> <b>Unlimited</b> stores</li>
+          <li class="flex gap-2"><span class="text-rose-500 font-bold">✓</span> All Growth features</li>
+          <li class="flex gap-2"><span class="text-rose-500 font-bold">✓</span> Custom domain</li>
+          <li class="flex gap-2"><span class="text-rose-500 font-bold">✓</span> White-label QR codes</li>
+          <li class="flex gap-2"><span class="text-rose-500 font-bold">✓</span> Dedicated account manager</li>
+          <li class="flex gap-2"><span class="text-rose-500 font-bold">✓</span> 24/7 phone support</li>
+        </ul>
+        <a href="#cta" class="block text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold px-6 py-3 rounded-xl transition-colors">Get Pro</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ──────────────────────────────────────────────────────── -->
+<section id="faq" class="py-20 sm:py-28 bg-white/40">
+  <div class="max-w-3xl mx-auto px-5 sm:px-8">
+    <div class="text-center mb-12 reveal">
+      <p class="text-rose-600 font-bold uppercase tracking-wider text-xs mb-3">FAQ</p>
+      <h2 class="font-display font-black text-4xl sm:text-5xl tracking-tight">
+        Questions, <span class="gradient-text">answered.</span>
+      </h2>
+    </div>
+
+    <div class="space-y-3">
+      <details class="group bg-white rounded-2xl p-5 shadow-sm reveal">
+        <summary class="flex justify-between items-center cursor-pointer">
+          <span class="font-semibold">Is this against Google's review policy?</span>
+          <svg class="chev w-5 h-5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <p class="mt-3 text-gray-700 leading-relaxed">No. The AI suggests options — the customer chooses, edits, and posts it themselves from their own Google account. We don't fake reviews and we don't gate ratings (low ratings can post too). This is the same pattern Birdeye, Podium, and other major platforms use.</p>
+      </details>
+      <details class="group bg-white rounded-2xl p-5 shadow-sm reveal">
+        <summary class="flex justify-between items-center cursor-pointer">
+          <span class="font-semibold">Can the AI auto-post reviews to Google?</span>
+          <svg class="chev w-5 h-5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <p class="mt-3 text-gray-700 leading-relaxed">No platform can — Google has no public API for posting reviews, by design. What we do: copy the review to the customer's clipboard and one-tap open Google's review screen. They paste + submit. It's the maximum automation possible, by Google's rules.</p>
+      </details>
+      <details class="group bg-white rounded-2xl p-5 shadow-sm reveal">
+        <summary class="flex justify-between items-center cursor-pointer">
+          <span class="font-semibold">What if a customer gives a bad rating?</span>
+          <svg class="chev w-5 h-5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <p class="mt-3 text-gray-700 leading-relaxed">You see it in your dashboard with the customer's tags (food, service, etc.) so you know exactly what went wrong. The customer can still post to Google if they want — but every honest review helps you improve faster.</p>
+      </details>
+      <details class="group bg-white rounded-2xl p-5 shadow-sm reveal">
+        <summary class="flex justify-between items-center cursor-pointer">
+          <span class="font-semibold">How long does setup take?</span>
+          <svg class="chev w-5 h-5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <p class="mt-3 text-gray-700 leading-relaxed">Less than 5 minutes. You add your store name, category, logo, Google review URL, and SEO keywords — we generate the QR code instantly. Print it, place it, done.</p>
+      </details>
+      <details class="group bg-white rounded-2xl p-5 shadow-sm reveal">
+        <summary class="flex justify-between items-center cursor-pointer">
+          <span class="font-semibold">Is customer data secure?</span>
+          <svg class="chev w-5 h-5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <p class="mt-3 text-gray-700 leading-relaxed">We don't collect any personal customer info — no name, email, or phone. Just the rating + tags they tap. Reviews are stored on encrypted Postgres servers (Supabase). Your owner login is bcrypt-hashed.</p>
+      </details>
+      <details class="group bg-white rounded-2xl p-5 shadow-sm reveal">
+        <summary class="flex justify-between items-center cursor-pointer">
+          <span class="font-semibold">Can I cancel anytime?</span>
+          <svg class="chev w-5 h-5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <p class="mt-3 text-gray-700 leading-relaxed">Yes — month-to-month. Cancel from your dashboard, no questions asked. Your reviews stay on Google forever.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FINAL CTA ────────────────────────────────────────────────── -->
+<section id="cta" class="py-20 sm:py-28 relative overflow-hidden">
+  <div class="orb w-96 h-96 -top-20 left-1/4 bg-amber-400"></div>
+  <div class="orb w-96 h-96 bottom-0 right-1/4 bg-pink-400"></div>
+
+  <div class="max-w-3xl mx-auto px-5 sm:px-8 text-center relative reveal">
+    <svg viewBox="0 0 100 100" class="w-20 h-20 mx-auto mb-6 animate-float">
+      <path d="M50 12 L61 38 L89 40 L67 60 L75 88 L50 73 L25 88 L33 60 L11 40 L39 38 Z"
+            fill="none" stroke="url(#starGrad)" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M40 56 Q50 64 60 56" fill="none" stroke="url(#starGrad)" stroke-width="3.5" stroke-linecap="round"/>
+    </svg>
+    <h2 class="font-display font-black text-4xl sm:text-6xl tracking-tight mb-6">
+      Your competitors aren't waiting. <br/>
+      <span class="gradient-text">Why are you?</span>
+    </h2>
+    <p class="text-lg sm:text-xl text-gray-700 mb-8 max-w-xl mx-auto">
+      14-day free trial. Set up in 5 minutes. Cancel anytime.
+      Start collecting reviews this week.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+      <a href="mailto:mail2rohitsharmappn@gmail.com?subject=I%20want%20to%20try%20Starly" class="gradient-bg text-white font-semibold px-8 py-4 rounded-2xl shadow-xl shadow-rose-500/30 hover:shadow-2xl hover:scale-[1.02] active:scale-95 transition-all">
+        Start free trial →
+      </a>
+      <a href="https://wa.me/917717766954?text=Hi%2C%20I%20want%20a%20Starly%20demo" class="bg-white text-gray-800 font-semibold px-8 py-4 rounded-2xl shadow-md hover:shadow-lg transition-all inline-flex items-center justify-center gap-2">
+        <svg viewBox="0 0 24 24" fill="#25D366" class="w-5 h-5"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2s-.8 1-1 1.2c-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5a8.9 8.9 0 0 1-1.6-2c-.2-.3 0-.5.1-.6l.5-.5.3-.5c.1-.2.1-.4 0-.5l-1-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5 0 1.5 1 2.9 1.2 3.1.2.2 2.1 3.2 5.1 4.5 1.3.6 2.6 1 3.5.7.6-.2 1.7-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.2-.3-.2-.6-.4z"/><path d="M12 2A10 10 0 0 0 3.4 17.06L2 22l5.07-1.33A10 10 0 1 0 12 2zm0 18.18a8.16 8.16 0 0 1-4.16-1.14l-.3-.18-3.01.79.8-2.93-.2-.3a8.18 8.18 0 1 1 6.87 3.76z"/></svg>
+        Book WhatsApp demo
+      </a>
+    </div>
+    <p class="mt-6 text-xs text-gray-500">No credit card needed for trial.</p>
+  </div>
+</section>
+
+<!-- ─── FOOTER ───────────────────────────────────────────────────── -->
+<footer class="bg-ink text-white py-14">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div>
+        <a href="#" class="flex items-center gap-2.5 mb-3">
+          <svg viewBox="0 0 100 100" class="w-9 h-9">
+            <path d="M50 12 L61 38 L89 40 L67 60 L75 88 L50 73 L25 88 L33 60 L11 40 L39 38 Z"
+                  fill="none" stroke="url(#starGrad)" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
+            <path d="M40 56 Q50 64 60 56" fill="none" stroke="url(#starGrad)" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+          <span class="font-display font-bold text-2xl">Starly</span>
+        </a>
+        <p class="text-sm text-gray-400 leading-relaxed">Helping local businesses get more 5-star Google reviews — without the awkward asking.</p>
+      </div>
+      <div>
+        <p class="font-bold text-sm uppercase tracking-wider mb-3 text-gray-300">Product</p>
+        <ul class="space-y-2 text-sm text-gray-400">
+          <li><a href="#how" class="hover:text-white transition">How it works</a></li>
+          <li><a href="#features" class="hover:text-white transition">Features</a></li>
+          <li><a href="#pricing" class="hover:text-white transition">Pricing</a></li>
+          <li><a href="#faq" class="hover:text-white transition">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-bold text-sm uppercase tracking-wider mb-3 text-gray-300">Company</p>
+        <ul class="space-y-2 text-sm text-gray-400">
+          <li><a href="mailto:hello@starly.app" class="hover:text-white transition">Contact</a></li>
+          <li><a href="#" class="hover:text-white transition">Privacy</a></li>
+          <li><a href="#" class="hover:text-white transition">Terms</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-bold text-sm uppercase tracking-wider mb-3 text-gray-300">Get in touch</p>
+        <a href="mailto:hello@starly.app" class="text-sm text-gray-400 hover:text-white transition block mb-2">hello@starly.app</a>
+        <a href="https://wa.me/91XXXXXXXXXX" class="text-sm text-gray-400 hover:text-white transition">WhatsApp us</a>
+      </div>
+    </div>
+    <div class="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
+      <p class="text-xs text-gray-500">© 2026 Starly. Made with ⭐ for local businesses.</p>
+      <p class="text-xs text-gray-500">Reviews policy-compliant. Built on Vercel + Supabase.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── SCRIPTS ──────────────────────────────────────────────────── -->
+<script>
+  // Reveal on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
