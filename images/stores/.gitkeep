@@ -1,0 +1,18 @@
+# Drop store photos here
+
+Save your store photos as:
+- store-1.jpg
+- store-2.jpg
+- store-3.jpg
+- store-4.jpg
+- store-5.jpg
+- store-6.jpg
+
+Each card on the marketing site auto-hides if its image isn't found,
+so you can start with 1-2 and add more later.
+
+Recommended: square or 4:3 aspect ratio, under 500 KB each (compress
+at tinypng.com if larger).
+
+Edit the store name and category for each card directly in
+`index.html` — search for "Real stores. Real reviews."
