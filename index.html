@@ -464,71 +464,38 @@
       </p>
     </div>
 
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 reveal">
-      <a href="#cta" class="store-card group rounded-3xl overflow-hidden bg-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all">
-        <div class="aspect-[4/3] overflow-hidden bg-gray-100">
-          <img src="images/stores/store-1.jpg" alt="" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform"
-               onerror="this.closest('.store-card').style.display='none'" />
+    <!--
+      Cards are rendered dynamically from /api/showcase on the Starly Next.js
+      app. Admins manage the list at /dashboard/showcase. The skeleton below
+      is what visitors see for ~100-300ms before the fetch resolves.
+      Falls back gracefully to a "Coming soon" line if the API is unreachable.
+    -->
+    <div id="store-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 reveal" aria-live="polite" aria-busy="true">
+      <!-- skeleton ×3 -->
+      <div class="store-skeleton rounded-3xl overflow-hidden bg-white shadow-lg">
+        <div class="aspect-[4/3] bg-gray-100 animate-pulse"></div>
+        <div class="p-4 space-y-2">
+          <div class="h-4 w-1/2 bg-gray-100 rounded animate-pulse"></div>
+          <div class="h-3 w-2/3 bg-gray-100 rounded animate-pulse"></div>
         </div>
-        <div class="p-4">
-          <p class="font-semibold text-gray-900">Sunny Cafe</p>
-          <p class="text-xs text-gray-500">☕ Cafe · Delhi</p>
+      </div>
+      <div class="store-skeleton rounded-3xl overflow-hidden bg-white shadow-lg">
+        <div class="aspect-[4/3] bg-gray-100 animate-pulse"></div>
+        <div class="p-4 space-y-2">
+          <div class="h-4 w-1/2 bg-gray-100 rounded animate-pulse"></div>
+          <div class="h-3 w-2/3 bg-gray-100 rounded animate-pulse"></div>
         </div>
-      </a>
-      <a href="#cta" class="store-card group rounded-3xl overflow-hidden bg-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all">
-        <div class="aspect-[4/3] overflow-hidden bg-gray-100">
-          <img src="images/stores/store-2.jpg" alt="" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform"
-               onerror="this.closest('.store-card').style.display='none'" />
+      </div>
+      <div class="store-skeleton rounded-3xl overflow-hidden bg-white shadow-lg">
+        <div class="aspect-[4/3] bg-gray-100 animate-pulse"></div>
+        <div class="p-4 space-y-2">
+          <div class="h-4 w-1/2 bg-gray-100 rounded animate-pulse"></div>
+          <div class="h-3 w-2/3 bg-gray-100 rounded animate-pulse"></div>
         </div>
-        <div class="p-4">
-          <p class="font-semibold text-gray-900">River Overflow Restaurant</p>
-          <p class="text-xs text-gray-500">🍽️ Restaurant · Patna</p>
-        </div>
-      </a>
-      <a href="#cta" class="store-card group rounded-3xl overflow-hidden bg-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all">
-        <div class="aspect-[4/3] overflow-hidden bg-gray-100">
-          <img src="images/stores/store-3.jpg" alt="" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform"
-               onerror="this.closest('.store-card').style.display='none'" />
-        </div>
-        <div class="p-4">
-          <p class="font-semibold text-gray-900">Aryan's Pet Shop</p>
-          <p class="text-xs text-gray-500">🐾 Pet Store · Patna</p>
-        </div>
-      </a>
-      <a href="#cta" class="store-card group rounded-3xl overflow-hidden bg-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all">
-        <div class="aspect-[4/3] overflow-hidden bg-gray-100">
-          <img src="images/stores/store-4.jpg" alt="" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform"
-               onerror="this.closest('.store-card').style.display='none'" />
-        </div>
-        <div class="p-4">
-          <p class="font-semibold text-gray-900">Store name 4</p>
-          <p class="text-xs text-gray-500">Category · City</p>
-        </div>
-      </a>
-      <a href="#cta" class="store-card group rounded-3xl overflow-hidden bg-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all">
-        <div class="aspect-[4/3] overflow-hidden bg-gray-100">
-          <img src="images/stores/store-5.jpg" alt="" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform"
-               onerror="this.closest('.store-card').style.display='none'" />
-        </div>
-        <div class="p-4">
-          <p class="font-semibold text-gray-900">Store name 5</p>
-          <p class="text-xs text-gray-500">Category · City</p>
-        </div>
-      </a>
-      <a href="#cta" class="store-card group rounded-3xl overflow-hidden bg-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all">
-        <div class="aspect-[4/3] overflow-hidden bg-gray-100">
-          <img src="images/stores/store-6.jpg" alt="" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform"
-               onerror="this.closest('.store-card').style.display='none'" />
-        </div>
-        <div class="p-4">
-          <p class="font-semibold text-gray-900">Store name 6</p>
-          <p class="text-xs text-gray-500">Category · City</p>
-        </div>
-      </a>
+      </div>
     </div>
-
-    <p class="text-xs text-gray-400 text-center mt-8">
-      Drop your store photos at <code class="bg-gray-100 px-1.5 py-0.5 rounded text-[11px]">images/stores/store-1.jpg</code> through <code class="bg-gray-100 px-1.5 py-0.5 rounded text-[11px]">store-6.jpg</code>. Cards without a photo auto-hide.
+    <p id="store-grid-empty" class="hidden text-sm text-gray-400 text-center mt-8">
+      More stores coming soon — be the first.
     </p>
   </div>
 </section>
@@ -789,6 +756,76 @@
     });
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+<!-- ─── REAL STORES — dynamic grid ─────────────────────────────────
+  Pulls the showcase rows that admins manage at
+  https://ai-review-system-s34u.vercel.app/dashboard/showcase
+  Returns: { stores: [{ id, name, category, city, photo_url, ... }] }
+  Edge-cached for 60s. Falls back to the "Coming soon" line on error
+  so the section never looks broken. -->
+<script>
+  (function loadShowcase() {
+    var API_URL = 'https://ai-review-system-s34u.vercel.app/api/showcase';
+    var grid = document.getElementById('store-grid');
+    var empty = document.getElementById('store-grid-empty');
+    if (!grid) return;
+
+    function escapeHtml(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function caption(store) {
+      var parts = [];
+      if (store.category) parts.push(escapeHtml(store.category));
+      if (store.city) parts.push(escapeHtml(store.city));
+      return parts.join(' · ');
+    }
+
+    function renderEmpty() {
+      grid.innerHTML = '';
+      grid.setAttribute('aria-busy', 'false');
+      if (empty) empty.classList.remove('hidden');
+    }
+
+    function render(stores) {
+      if (!stores || stores.length === 0) {
+        renderEmpty();
+        return;
+      }
+      var html = stores.map(function (s) {
+        var sub = caption(s);
+        return ''
+          + '<a href="#cta" class="store-card group rounded-3xl overflow-hidden bg-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all">'
+          +   '<div class="aspect-[4/3] overflow-hidden bg-gray-100">'
+          +     '<img src="' + escapeHtml(s.photo_url) + '" alt="" loading="lazy" '
+          +          'class="w-full h-full object-cover group-hover:scale-105 transition-transform" '
+          +          'onerror="this.closest(\'.store-card\').style.display=\'none\'" />'
+          +   '</div>'
+          +   '<div class="p-4">'
+          +     '<p class="font-semibold text-gray-900">' + escapeHtml(s.name) + '</p>'
+          +     (sub ? '<p class="text-xs text-gray-500">' + sub + '</p>' : '')
+          +   '</div>'
+          + '</a>';
+      }).join('');
+      grid.innerHTML = html;
+      grid.setAttribute('aria-busy', 'false');
+      if (empty) empty.classList.add('hidden');
+    }
+
+    fetch(API_URL, { headers: { accept: 'application/json' } })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(function (data) { render(data && data.stores ? data.stores : []); })
+      .catch(function () { renderEmpty(); });
+  })();
 </script>
 
 </body>
