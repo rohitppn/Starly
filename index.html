@@ -175,6 +175,7 @@
       <a href="#how" class="hover:text-rose-600 transition">How it works</a>
       <a href="#features" class="hover:text-rose-600 transition">Features</a>
       <a href="#pricing" class="hover:text-rose-600 transition">Pricing</a>
+      <a href="#founder" class="hover:text-rose-600 transition">Story</a>
       <a href="#faq" class="hover:text-rose-600 transition">FAQ</a>
     </div>
     <a href="https://ai-review-system-s34u.vercel.app/auth/signup" target="_blank" rel="noopener noreferrer" class="gradient-bg text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-rose-500/30 hover:shadow-xl hover:scale-[1.03] active:scale-95 transition-all text-sm">
@@ -461,6 +462,41 @@
   </div>
 </section>
 
+<!-- ─── INDUSTRIES ───────────────────────────────────────────────── -->
+<section id="industries" class="py-20 sm:py-28 bg-white/40">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8">
+    <div class="text-center mb-14 reveal">
+      <p class="text-rose-600 font-bold uppercase tracking-wider text-xs mb-3">Works everywhere</p>
+      <h2 class="font-display font-black text-4xl sm:text-5xl tracking-tight max-w-3xl mx-auto">
+        Made for <span class="gradient-text">every kind of business</span>.
+      </h2>
+      <p class="mt-5 text-lg text-gray-700 max-w-2xl mx-auto">
+        Cafés, salons, spas, hotels, libraries, shops — wherever customers walk in,
+        Starly turns their visit into a 5-star Google review.
+      </p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 reveal">
+      <div class="rounded-3xl overflow-hidden bg-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all">
+        <img src="images/starly-graphics/5.png" alt="Starly for cafés and restaurants — more 5-star reviews, more happy customers" loading="lazy" class="w-full h-auto block" />
+      </div>
+      <div class="rounded-3xl overflow-hidden bg-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all">
+        <img src="images/starly-graphics/6.png" alt="Starly for salons and barbershops" loading="lazy" class="w-full h-auto block" />
+      </div>
+      <div class="rounded-3xl overflow-hidden bg-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all">
+        <img src="images/starly-graphics/7.png" alt="Starly for spas and wellness studios" loading="lazy" class="w-full h-auto block" />
+      </div>
+      <div class="rounded-3xl overflow-hidden bg-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all">
+        <img src="images/starly-graphics/8.png" alt="Starly for hotels and hospitality" loading="lazy" class="w-full h-auto block" />
+      </div>
+    </div>
+
+    <p class="text-center text-sm text-gray-500 mt-8 reveal">
+      …and 20+ more categories. <a href="#pricing" class="text-rose-600 font-semibold hover:underline">See pricing →</a>
+    </p>
+  </div>
+</section>
+
 <!-- ─── REAL STORES ──────────────────────────────────────────────── -->
 <section id="customers" class="py-20 sm:py-28">
   <div class="max-w-6xl mx-auto px-5 sm:px-8">
@@ -475,38 +511,25 @@
     </div>
 
     <!--
-      Cards are rendered dynamically from /api/showcase on the Starly Next.js
-      app. Admins manage the list at /dashboard/showcase. The skeleton below
-      is what visitors see for ~100-300ms before the fetch resolves.
-      Falls back gracefully to a "Coming soon" line if the API is unreachable.
+      Static showcase of 4 real local stores using Starly. The dynamic-
+      fetch CMS (/api/showcase + /dashboard/showcase) still exists on the
+      Next.js app — see the commented-out <script> at the bottom of this
+      file to re-enable runtime population when ready.
     -->
-    <div id="store-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 reveal" aria-live="polite" aria-busy="true">
-      <!-- skeleton ×3 -->
-      <div class="store-skeleton rounded-3xl overflow-hidden bg-white shadow-lg">
-        <div class="aspect-[4/3] bg-gray-100 animate-pulse"></div>
-        <div class="p-4 space-y-2">
-          <div class="h-4 w-1/2 bg-gray-100 rounded animate-pulse"></div>
-          <div class="h-3 w-2/3 bg-gray-100 rounded animate-pulse"></div>
-        </div>
-      </div>
-      <div class="store-skeleton rounded-3xl overflow-hidden bg-white shadow-lg">
-        <div class="aspect-[4/3] bg-gray-100 animate-pulse"></div>
-        <div class="p-4 space-y-2">
-          <div class="h-4 w-1/2 bg-gray-100 rounded animate-pulse"></div>
-          <div class="h-3 w-2/3 bg-gray-100 rounded animate-pulse"></div>
-        </div>
-      </div>
-      <div class="store-skeleton rounded-3xl overflow-hidden bg-white shadow-lg">
-        <div class="aspect-[4/3] bg-gray-100 animate-pulse"></div>
-        <div class="p-4 space-y-2">
-          <div class="h-4 w-1/2 bg-gray-100 rounded animate-pulse"></div>
-          <div class="h-3 w-2/3 bg-gray-100 rounded animate-pulse"></div>
-        </div>
-      </div>
+    <div class="grid sm:grid-cols-2 gap-5 lg:gap-7 max-w-4xl mx-auto reveal">
+      <a href="https://wa.me/917717766954?text=Hi%2C%20I%20want%20Starly%20for%20my%20store" target="_blank" rel="noopener noreferrer" class="block rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all">
+        <img src="images/stores/store-1.jpg" alt="Subham 99 Store, Punpun Pazar, Patna — Starly customer" loading="lazy" class="w-full h-auto block" />
+      </a>
+      <a href="https://wa.me/917717766954?text=Hi%2C%20I%20want%20Starly%20for%20my%20store" target="_blank" rel="noopener noreferrer" class="block rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all">
+        <img src="images/stores/store-2.jpg" alt="Roshan Paan Dukan, Manora, Patna — Starly customer" loading="lazy" class="w-full h-auto block" />
+      </a>
+      <a href="https://wa.me/917717766954?text=Hi%2C%20I%20want%20Starly%20for%20my%20store" target="_blank" rel="noopener noreferrer" class="block rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all">
+        <img src="images/stores/store-3.jpg" alt="Shiv Shakti Medico, Kankarbagh, Patna — Starly customer" loading="lazy" class="w-full h-auto block" />
+      </a>
+      <a href="https://wa.me/917717766954?text=Hi%2C%20I%20want%20Starly%20for%20my%20store" target="_blank" rel="noopener noreferrer" class="block rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all">
+        <img src="images/stores/store-4.jpg" alt="Gupta Disposals, Punpun Pazar, Patna — Starly customer" loading="lazy" class="w-full h-auto block" />
+      </a>
     </div>
-    <p id="store-grid-empty" class="hidden text-sm text-gray-400 text-center mt-8">
-      More stores coming soon — be the first.
-    </p>
   </div>
 </section>
 
@@ -651,6 +674,66 @@
   </div>
 </section>
 
+<!-- ─── FOUNDER ──────────────────────────────────────────────────── -->
+<section id="founder" class="py-20 sm:py-28 bg-white/40">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8">
+    <div class="grid lg:grid-cols-[320px_1fr] gap-10 lg:gap-14 items-center">
+      <!-- Portrait -->
+      <div class="reveal flex justify-center lg:justify-start">
+        <div class="relative">
+          <div class="orb w-72 h-72 -top-8 -left-8 bg-amber-300 -z-10"></div>
+          <img src="images/starly-founder/tbt_ai_img_00633_.png" alt="Rohit, founder of Starly" loading="lazy" class="relative w-64 sm:w-72 aspect-square object-cover rounded-3xl shadow-2xl shadow-rose-300/40 ring-4 ring-white" />
+          <div class="absolute -bottom-4 -right-4 bg-white rounded-2xl px-4 py-2 shadow-lg flex items-center gap-2">
+            <span class="text-amber-400 text-xl">★</span>
+            <span class="text-sm font-bold text-gray-800">Founder</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Story -->
+      <div class="reveal">
+        <p class="text-rose-600 font-bold uppercase tracking-wider text-xs mb-3">Why Starly exists</p>
+        <h2 class="font-display font-black text-3xl sm:text-4xl lg:text-5xl tracking-tight mb-6">
+          Great stores were losing to bad ones — <span class="gradient-text">just because of Google reviews.</span>
+        </h2>
+
+        <div class="space-y-4 text-gray-700 leading-relaxed">
+          <p>
+            Hi, I'm <b>Rohit</b> — founder of Starly. While working with local shops
+            across Patna and Bihar, I kept noticing the same thing: amazing
+            businesses, friendly owners, real loyal customers — and barely any
+            Google reviews. Their competitors, often with worse service, ranked
+            higher in search just because they happened to have more 5-star ratings.
+          </p>
+          <p>
+            Owners tried asking customers in person. It almost never worked.
+            Customers got busy, forgot, or didn't know what to write. Even when
+            they tried, typing out a review on a tiny phone screen wasn't fun —
+            so most gave up halfway.
+          </p>
+          <p>
+            I built Starly to fix that one specific problem. A QR code on the
+            table, a 30-second tap-tap-rate flow, and the customer posts a real
+            review to Google before they even leave the shop. No subscription,
+            no funny business — just <b>₹999 once for a full year</b>, and a
+            printed QR card mailed to your door.
+          </p>
+        </div>
+
+        <div class="mt-8 flex flex-wrap gap-3 reveal">
+          <a href="#cta" class="gradient-bg text-white font-semibold px-6 py-3 rounded-xl shadow-lg shadow-rose-500/30 hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all">
+            Get Starly for your store →
+          </a>
+          <a href="https://wa.me/917717766954?text=Hi%20Rohit%2C%20I%20want%20to%20chat%20about%20Starly" target="_blank" rel="noopener noreferrer" class="bg-white text-gray-800 font-semibold px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all inline-flex items-center gap-2">
+            <svg viewBox="0 0 24 24" fill="#25D366" class="w-5 h-5"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2s-.8 1-1 1.2c-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5a8.9 8.9 0 0 1-1.6-2c-.2-.3 0-.5.1-.6l.5-.5.3-.5c.1-.2.1-.4 0-.5l-1-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5 0 1.5 1 2.9 1.2 3.1.2.2 2.1 3.2 5.1 4.5 1.3.6 2.6 1 3.5.7.6-.2 1.7-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.2-.3-.2-.6-.4z"/><path d="M12 2A10 10 0 0 0 3.4 17.06L2 22l5.07-1.33A10 10 0 1 0 12 2zm0 18.18a8.16 8.16 0 0 1-4.16-1.14l-.3-.18-3.01.79.8-2.93-.2-.3a8.18 8.18 0 1 1 6.87 3.76z"/></svg>
+            Chat with me on WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ─── FINAL CTA ────────────────────────────────────────────────── -->
 <section id="cta" class="py-20 sm:py-28 relative overflow-hidden">
   <div class="orb w-96 h-96 -top-20 left-1/4 bg-amber-400"></div>
@@ -742,12 +825,13 @@
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
 
-<!-- ─── REAL STORES — dynamic grid ─────────────────────────────────
-  Pulls the showcase rows that admins manage at
-  https://ai-review-system-s34u.vercel.app/dashboard/showcase
-  Returns: { stores: [{ id, name, category, city, photo_url, ... }] }
-  Edge-cached for 60s. Falls back to the "Coming soon" line on error
-  so the section never looks broken. -->
+<!-- ─── REAL STORES — dynamic grid (DISABLED) ──────────────────────
+  Showcase is now a static grid of marketing posters living in
+  images/stores/. The /api/showcase CMS pipe still exists on the
+  Next.js app — to re-enable runtime population, uncomment the
+  <script> below AND swap the static grid in the "REAL STORES"
+  section above for the original skeleton + #store-grid container.
+
 <script>
   (function loadShowcase() {
     var API_URL = 'https://ai-review-system-s34u.vercel.app/api/showcase';
@@ -757,31 +841,22 @@
 
     function escapeHtml(s) {
       return String(s == null ? '' : s)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
-
     function caption(store) {
       var parts = [];
       if (store.category) parts.push(escapeHtml(store.category));
       if (store.city) parts.push(escapeHtml(store.city));
       return parts.join(' · ');
     }
-
     function renderEmpty() {
       grid.innerHTML = '';
       grid.setAttribute('aria-busy', 'false');
       if (empty) empty.classList.remove('hidden');
     }
-
     function render(stores) {
-      if (!stores || stores.length === 0) {
-        renderEmpty();
-        return;
-      }
+      if (!stores || stores.length === 0) { renderEmpty(); return; }
       var html = stores.map(function (s) {
         var sub = caption(s);
         return ''
@@ -801,7 +876,6 @@
       grid.setAttribute('aria-busy', 'false');
       if (empty) empty.classList.add('hidden');
     }
-
     fetch(API_URL, { headers: { accept: 'application/json' } })
       .then(function (res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -811,6 +885,7 @@
       .catch(function () { renderEmpty(); });
   })();
 </script>
+-->
 
 </body>
 </html>
